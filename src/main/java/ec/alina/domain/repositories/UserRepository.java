@@ -1,6 +1,6 @@
-package ec.edu.espol.domain.repositories;
+package ec.alina.domain.repositories;
 
-import ec.edu.espol.domain.models.User;
+import ec.alina.domain.models.User;
 
 public interface UserRepository {
     User create(String name, String email, String password);

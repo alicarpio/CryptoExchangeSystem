@@ -1,14 +1,14 @@
-package ec.edu.espol.data.repositories;
+package ec.alina.data.repositories;
 
-import ec.edu.espol.domain.models.User;
-import ec.edu.espol.domain.repositories.UserRepository;
+import ec.alina.domain.models.User;
+import ec.alina.domain.repositories.UserRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class InMemoryUserRepository implements UserRepository {
-    Map<UUID, User> users;
+    private final Map<UUID, User> users;
 
     public InMemoryUserRepository() {
         this.users = new HashMap<>();
@@ -26,6 +26,9 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User findByEmail(String email) {
-        return null;
+        return users.values().stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst()
+                .orElse(null);
     }
 }

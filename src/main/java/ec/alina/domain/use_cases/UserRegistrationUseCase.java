@@ -1,7 +1,7 @@
-package ec.edu.espol.domain.use_cases;
+package ec.alina.domain.use_cases;
 
-import ec.edu.espol.domain.models.User;
-import ec.edu.espol.domain.repositories.UserRepository;
+import ec.alina.domain.models.User;
+import ec.alina.domain.repositories.UserRepository;
 
 public class UserRegistrationUseCase {
     private final UserRepository users;

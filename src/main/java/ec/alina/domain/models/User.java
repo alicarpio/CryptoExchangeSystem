@@ -1,15 +1,17 @@
-package ec.edu.espol.domain.models;
+package ec.alina.domain.models;
+
+import ec.alina.Utils;
 
 import java.util.UUID;
 
 public final class User {
-    private UUID id;
+    private final UUID id;
     private String name;
     private String email;
     private String password;
 
     public User(String name, String email, String password) {
-        this.id = UUID.randomUUID();
+        this.id = Utils.generateUniqueId();
         this.name = name;
         this.email = email;
         this.password = password;
@@ -41,9 +43,5 @@ public final class User {
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 }
