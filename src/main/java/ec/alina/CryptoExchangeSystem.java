@@ -8,6 +8,7 @@ import ec.alina.domain.repositories.UserRepository;
 import ec.alina.domain.use_cases.UserLoginUseCase;
 import ec.alina.domain.use_cases.UserLogoutUseCase;
 import ec.alina.domain.use_cases.UserRegistrationUseCase;
+import ec.alina.domain.validations.UserValidator;
 import ec.alina.ui.ConsoleAdapter;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -20,7 +21,8 @@ public class CryptoExchangeSystem {
         UserRepository userRepository = new InMemoryUserRepository();
         SessionRepository sessionRepository = new InMemorySessionRepository();
 
-        UserRegistrationUseCase userRegistrationUseCase = new UserRegistrationUseCase(userRepository);
+
+        UserRegistrationUseCase userRegistrationUseCase = new UserRegistrationUseCase(userRepository, new UserValidator());
         UserLoginUseCase userLoginUseCase = new UserLoginUseCase(userRepository, sessionRepository);
         UserLogoutUseCase userLogoutUseCase = new UserLogoutUseCase(sessionRepository);
 

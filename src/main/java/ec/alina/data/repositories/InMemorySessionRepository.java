@@ -4,13 +4,10 @@ import ec.alina.domain.models.Session;
 import ec.alina.domain.models.User;
 import ec.alina.domain.repositories.SessionRepository;
 
+import java.util.Objects;
+
 public class InMemorySessionRepository implements SessionRepository {
     private Session session;
-
-    @Override
-    public Session create(User user) {
-        return new Session(user);
-    }
 
     @Override
     public void save(Session session) {
@@ -24,6 +21,7 @@ public class InMemorySessionRepository implements SessionRepository {
 
     @Override
     public User getCurrentUser() {
+        Objects.requireNonNull(session, "No hay una sesión activa");
         return session.getUser();
     }
 }

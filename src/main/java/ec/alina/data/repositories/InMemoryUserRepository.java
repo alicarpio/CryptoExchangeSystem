@@ -15,11 +15,6 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public User create(String name, String email, String password) {
-        return new User(name, email, password);
-    }
-
-    @Override
     public void save(User user) {
         users.put(user.getId(), user);
     }

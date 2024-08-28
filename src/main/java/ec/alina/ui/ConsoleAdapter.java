@@ -4,6 +4,7 @@ import ec.alina.domain.config.BootAdapter;
 import ec.alina.domain.use_cases.UserLoginUseCase;
 import ec.alina.domain.use_cases.UserLogoutUseCase;
 import ec.alina.domain.use_cases.UserRegistrationUseCase;
+import ec.alina.domain.validations.exceptions.ValidationException;
 
 import java.util.Scanner;
 
@@ -26,7 +27,7 @@ public class ConsoleAdapter implements BootAdapter {
         printMenu();
 
         while (scanner.hasNextInt()) {
-            int selectedOption = scanner.nextInt();
+            int selectedOption = Integer.parseInt(scanner.nextLine());
             dispatchUseCase(selectedOption);
             printMenu();
         }
@@ -62,10 +63,18 @@ public class ConsoleAdapter implements BootAdapter {
 
     private void dispatchUserRegistrationUseCase() {
         System.out.println("Enter your name: ");
-        String userName = scanner.next();
+        String userName = scanner.nextLine();
         System.out.println("Enter your email: ");
-        String userEmail = scanner.next();
+        String userEmail = scanner.nextLine();
         System.out.println("Enter your password: ");
-        String userPassword = scanner.next();
+        String userPassword = scanner.nextLine();
+
+        try {
+            userRegistrationUseCase.invoke(userName, userEmail, userPassword);
+            System.out.println("User registration successful");
+        } catch (ValidationException ex) {
+            System.out.println(ex.getMessage());
+            System.out.println("The user could not be saved");
+        }
     }
 }
