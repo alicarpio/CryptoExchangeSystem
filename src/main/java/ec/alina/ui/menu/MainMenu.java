@@ -2,6 +2,7 @@ package ec.alina.ui.menu;
 
 import ec.alina.domain.use_cases.UserLoginUseCase;
 import ec.alina.domain.use_cases.UserRegistrationUseCase;
+import ec.alina.domain.validations.exceptions.InvalidEmailOrPasswordException;
 import ec.alina.domain.validations.exceptions.ValidationException;
 
 import java.util.Scanner;
@@ -9,9 +10,9 @@ import java.util.Scanner;
 import static java.lang.System.out;
 
 public class MainMenu extends Menu {
-    private UserRegistrationUseCase userRegistrationUseCase;
-    private UserLoginUseCase userLoginUseCase;
-    private Scanner scanner;
+    private final UserRegistrationUseCase userRegistrationUseCase;
+    private final UserLoginUseCase userLoginUseCase;
+    private final Scanner scanner;
 
     public MainMenu(UserRegistrationUseCase userRegistrationUseCase, UserLoginUseCase userLoginUseCase, Scanner scanner) {
         super("Main menu");
@@ -29,10 +30,23 @@ public class MainMenu extends Menu {
     }
 
     private void onLogin() {
+        out.println("----------- Log in -----------");
+        out.println("Enter your email: ");
+        String userEmail = scanner.nextLine();
+        out.println("Enter your password: ");
+        String userPassword = scanner.nextLine();
 
+        try {
+            userLoginUseCase.invoke(userEmail, userPassword);
+            out.println("Log in successful");
+        } catch (InvalidEmailOrPasswordException ex) {
+            out.println(ex.getMessage());
+            out.println("Something went wrong!");
+        }
     }
 
     private void onRegisterUser() {
+        out.println("----------- Registration -----------");
         out.println("Enter your name: ");
         String userName = scanner.nextLine();
         out.println("Enter your email: ");

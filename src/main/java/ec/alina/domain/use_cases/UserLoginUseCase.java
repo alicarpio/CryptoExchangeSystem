@@ -4,6 +4,7 @@ import ec.alina.domain.models.Session;
 import ec.alina.domain.models.User;
 import ec.alina.domain.repositories.SessionRepository;
 import ec.alina.domain.repositories.UserRepository;
+import ec.alina.domain.validations.exceptions.InvalidEmailOrPasswordException;
 
 public class UserLoginUseCase {
     private final UserRepository users;
@@ -14,16 +15,15 @@ public class UserLoginUseCase {
         this.sessions = sessions;
     }
 
-    public Session invoke(String email, String password) {
+    public Boolean invoke(String email, String password) throws InvalidEmailOrPasswordException {
         User user = users.findByEmail(email);
 
-        if (user == null | !user.getPassword().equals(password)) {
-            throw new IllegalArgumentException("Invalid email or password");
+        if (user == null || !user.getPassword().equals(password)) {
+            throw new InvalidEmailOrPasswordException();
         }
 
         Session session = new Session(user);
         sessions.save(session);
-
-        return session;
+        return true;
     }
 }
