@@ -19,7 +19,6 @@ public class CryptoExchangeSystem {
         UserRepository userRepository = new InMemoryUserRepository();
         SessionRepository sessionRepository = new InMemorySessionRepository();
 
-
         UserRegistrationUseCase userRegistrationUseCase = new UserRegistrationUseCase(userRepository, new UserValidator());
         UserLoginUseCase userLoginUseCase = new UserLoginUseCase(userRepository, sessionRepository);
         UserLogoutUseCase userLogoutUseCase = new UserLogoutUseCase(sessionRepository);

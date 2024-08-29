@@ -13,12 +13,14 @@ public class MainMenu extends Menu {
     private final UserRegistrationUseCase userRegistrationUseCase;
     private final UserLoginUseCase userLoginUseCase;
     private final Scanner scanner;
+    private final MenuNavigator navigator;
 
-    public MainMenu(UserRegistrationUseCase userRegistrationUseCase, UserLoginUseCase userLoginUseCase, Scanner scanner) {
+    public MainMenu(UserRegistrationUseCase userRegistrationUseCase, UserLoginUseCase userLoginUseCase, Scanner scanner, MenuNavigator navigator) {
         super("Main menu");
         this.userRegistrationUseCase = userRegistrationUseCase;
         this.userLoginUseCase = userLoginUseCase;
         this.scanner = scanner;
+        this.navigator = navigator;
     }
 
     @Override
@@ -39,6 +41,7 @@ public class MainMenu extends Menu {
         try {
             userLoginUseCase.invoke(userEmail, userPassword);
             out.println("Log in successful");
+            navigator.navigateTo(MenuNavigator.EXCHANGE_MENU);
         } catch (InvalidEmailOrPasswordException ex) {
             out.println(ex.getMessage());
             out.println("Something went wrong!");

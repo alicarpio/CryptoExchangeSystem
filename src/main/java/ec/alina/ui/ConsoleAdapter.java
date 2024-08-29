@@ -4,17 +4,19 @@ import ec.alina.domain.config.BootAdapter;
 import ec.alina.domain.use_cases.UserLoginUseCase;
 import ec.alina.domain.use_cases.UserLogoutUseCase;
 import ec.alina.domain.use_cases.UserRegistrationUseCase;
-import ec.alina.ui.menu.MainMenu;
-import ec.alina.ui.menu.Menu;
+import ec.alina.ui.menu.*;
 
 import java.util.Scanner;
 
 import static java.lang.System.out;
 
-public class ConsoleAdapter implements BootAdapter {
+public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
     private final Scanner scanner;
 
+    private final MenuNavigator navigator;
+
     private Menu mainMenu;
+    private Menu exchangeMenu;
     private Menu currentMenu;
 
     public ConsoleAdapter(
@@ -22,14 +24,21 @@ public class ConsoleAdapter implements BootAdapter {
             UserLoginUseCase userLoginUseCase,
             UserLogoutUseCase userLogoutUseCase
     ) {
+        navigator = new MenuNavigator(this);
+
         this.scanner = new Scanner(System.in);
-        this.mainMenu = new MainMenu(userRegistrationUseCase, userLoginUseCase, scanner).build();
+        this.mainMenu = new MainMenu(userRegistrationUseCase, userLoginUseCase, scanner, navigator).build();
+        this.exchangeMenu = new ExchangeMenu(userLogoutUseCase, navigator).build();
         this.currentMenu = mainMenu;
+
+        navigator.register(MenuNavigator.MAIN_MENU, mainMenu);
+        navigator.register(MenuNavigator.EXCHANGE_MENU, exchangeMenu);
+
     }
 
     @Override
     public void boot() {
-        System.out.println("Welcome to the Crypto Exchange System");
+        System.out.println("------------------ Welcome to the Crypto Exchange System --------------------");
         while (true) {
             try {
                 currentMenu.show();
@@ -42,5 +51,10 @@ public class ConsoleAdapter implements BootAdapter {
                 out.println("Please, enter a valid number");
             }
         }
+    }
+
+    @Override
+    public void setCurrentMenu(Menu menu) {
+        currentMenu = menu;
     }
 }
