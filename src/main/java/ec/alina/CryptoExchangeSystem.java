@@ -43,8 +43,18 @@ public class CryptoExchangeSystem {
         GetCurrentUseCase getCurrentUseCase = new GetCurrentUseCase(sessionRepository);
         ViewWalletBalanceUseCase viewWalletBalanceUseCase = new ViewWalletBalanceUseCase(walletRepository);
         WalletRegistrationUseCase walletRegistrationUseCase = new WalletRegistrationUseCase(walletRepository);
+        DepositMoneyUseCase depositMoneyUseCase = new DepositMoneyUseCase(walletRepository);
 
-        BootAdapter bootAdapter = new ConsoleAdapter(userRegistrationUseCase, userLoginUseCase, userLogoutUseCase, getCurrentUseCase, walletRegistrationUseCase, viewWalletBalanceUseCase);
+        BootAdapter bootAdapter = new ConsoleAdapter
+                (
+                        userRegistrationUseCase,
+                        userLoginUseCase,
+                        userLogoutUseCase,
+                        getCurrentUseCase,
+                        walletRegistrationUseCase,
+                        viewWalletBalanceUseCase,
+                        depositMoneyUseCase
+                );
         bootAdapter.boot();
     }
 
