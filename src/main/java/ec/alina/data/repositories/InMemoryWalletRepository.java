@@ -11,12 +11,12 @@ public class InMemoryWalletRepository implements WalletRepository {
     private final Map<UUID, Wallet> wallets = new HashMap<>();
 
     @Override
-    public Wallet findWalletByUserId(UUID userId) {
-        return wallets.get(userId);
+    public void save(Wallet wallet) {
+        wallets.put(wallet.getUserId(), wallet);
     }
 
     @Override
-    public void save(Wallet wallet) {
-        wallets.put(wallet.getUserId(), wallet);
+    public Wallet findWalletByUserId(UUID userId) {
+        return wallets.get(userId);
     }
 }
