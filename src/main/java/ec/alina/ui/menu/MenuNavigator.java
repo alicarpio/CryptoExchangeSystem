@@ -6,8 +6,8 @@ public class MenuNavigator {
     public static final String MAIN_MENU = "MAIN_MENU";
     public static final String EXCHANGE_MENU = "EXCHANGE_MENU";
 
-    private Map<String, Menu> registry = new HashMap<>();
-    private MenuNavigatorHost navigatorHost;
+    private final Map<String, Menu> registry = new HashMap<>();
+    private final MenuNavigatorHost navigatorHost;
     private Deque<Menu> navStack = new ArrayDeque<>();
 
     public MenuNavigator(MenuNavigatorHost navigatorHost) {

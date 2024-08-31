@@ -10,11 +10,6 @@ import java.util.UUID;
 public abstract class Menu {
     protected final UUID id;
     protected final List<MenuItem> items;
-
-    public String getTitle() {
-        return title;
-    }
-
     private final String title;
 
     public Menu(String title) {
@@ -54,6 +49,4 @@ public abstract class Menu {
     public List<MenuItem> getItems() {
         return Collections.unmodifiableList(items);
     }
-
-
 }
