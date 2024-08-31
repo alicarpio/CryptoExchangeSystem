@@ -20,7 +20,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: "17"
-
+          distribution: corretto
+          
       - name: Install PMD
         run: |
           wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.49.0/pmd-bin-6.49.0.zip
@@ -34,7 +35,5 @@ jobs:
       - name: Upload PMD report
         uses: actions/upload-artifact@v3
         with:
-          java-version: "17"
-          distribution: "corretto"
           name: pmd-report
           path: pmd-report.txt
