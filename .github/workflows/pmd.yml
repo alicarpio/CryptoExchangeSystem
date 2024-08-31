@@ -27,10 +27,11 @@ jobs:
           wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F6.49.0/pmd-bin-6.49.0.zip
           unzip pmd-bin-6.49.0.zip -d pmd
           export PATH="$PATH:$GITHUB_WORKSPACE/pmd/pmd-bin-6.49.0/bin"
+          ls -R pmd 
 
       - name: Run PMD
         run: |
-          pmd-bin-6.49.0/bin/run.sh pmd -d ./src -R rulesets/java/quickstart.xml -f text -r pmd-report.txt
+          pmd/pmd-bin-6.49.0/bin/run.sh pmd -d ./src -R rulesets/java/quickstart.xml -f text -r pmd-report.txt
 
       - name: Upload PMD report
         uses: actions/upload-artifact@v3
