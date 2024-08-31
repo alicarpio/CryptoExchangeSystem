@@ -1,7 +1,9 @@
 package ec.alina.ui.menu;
 
+import ec.alina.domain.models.User;
 import ec.alina.domain.use_cases.UserLoginUseCase;
 import ec.alina.domain.use_cases.UserRegistrationUseCase;
+import ec.alina.domain.use_cases.WalletRegistrationUseCase;
 import ec.alina.domain.validations.exceptions.InvalidEmailOrPasswordException;
 import ec.alina.domain.validations.exceptions.ValidationException;
 
@@ -12,13 +14,20 @@ import static java.lang.System.out;
 public class MainMenu extends Menu {
     private final UserRegistrationUseCase userRegistrationUseCase;
     private final UserLoginUseCase userLoginUseCase;
+    private final WalletRegistrationUseCase walletRegistrationUseCase;
     private final Scanner scanner;
     private final MenuNavigator navigator;
 
-    public MainMenu(UserRegistrationUseCase userRegistrationUseCase, UserLoginUseCase userLoginUseCase, Scanner scanner, MenuNavigator navigator) {
+    public MainMenu(
+            UserRegistrationUseCase userRegistrationUseCase,
+            UserLoginUseCase userLoginUseCase,
+            WalletRegistrationUseCase walletRegistrationUseCase,
+            Scanner scanner,
+            MenuNavigator navigator) {
         super("Main menu");
         this.userRegistrationUseCase = userRegistrationUseCase;
         this.userLoginUseCase = userLoginUseCase;
+        this.walletRegistrationUseCase = walletRegistrationUseCase;
         this.scanner = scanner;
         this.navigator = navigator;
     }
@@ -58,7 +67,8 @@ public class MainMenu extends Menu {
         String userPassword = scanner.nextLine();
 
         try {
-            userRegistrationUseCase.invoke(userName, userEmail, userPassword);
+            User newUser = userRegistrationUseCase.invoke(userName, userEmail, userPassword);
+            walletRegistrationUseCase.invoke(newUser.getId());
             out.println("User registration successful");
         } catch (ValidationException ex) {
             out.println(ex.getMessage());

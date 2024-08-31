@@ -1,9 +1,7 @@
 package ec.alina.ui;
 
 import ec.alina.domain.config.BootAdapter;
-import ec.alina.domain.use_cases.UserLoginUseCase;
-import ec.alina.domain.use_cases.UserLogoutUseCase;
-import ec.alina.domain.use_cases.UserRegistrationUseCase;
+import ec.alina.domain.use_cases.*;
 import ec.alina.ui.menu.*;
 
 import java.util.Scanner;
@@ -22,13 +20,16 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
     public ConsoleAdapter(
             UserRegistrationUseCase userRegistrationUseCase,
             UserLoginUseCase userLoginUseCase,
-            UserLogoutUseCase userLogoutUseCase
+            UserLogoutUseCase userLogoutUseCase,
+            GetCurrentUseCase getCurrentUseCase,
+            WalletRegistrationUseCase walletRegistrationUseCase,
+            ViewWalletBalanceUseCase viewWalletBalanceUseCase
     ) {
         navigator = new MenuNavigator(this);
 
         this.scanner = new Scanner(System.in);
-        this.mainMenu = new MainMenu(userRegistrationUseCase, userLoginUseCase, scanner, navigator).build();
-        this.exchangeMenu = new ExchangeMenu(userLogoutUseCase, navigator).build();
+        this.mainMenu = new MainMenu(userRegistrationUseCase, userLoginUseCase, walletRegistrationUseCase, scanner, navigator).build();
+        this.exchangeMenu = new ExchangeMenu(userLogoutUseCase, viewWalletBalanceUseCase, getCurrentUseCase, navigator).build();
         this.currentMenu = mainMenu;
 
         navigator.register(MenuNavigator.MAIN_MENU, mainMenu);
