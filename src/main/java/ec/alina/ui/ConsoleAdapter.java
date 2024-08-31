@@ -23,13 +23,30 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
             UserLogoutUseCase userLogoutUseCase,
             GetCurrentUseCase getCurrentUseCase,
             WalletRegistrationUseCase walletRegistrationUseCase,
-            ViewWalletBalanceUseCase viewWalletBalanceUseCase
+            ViewWalletBalanceUseCase viewWalletBalanceUseCase,
+            DepositMoneyUseCase depositMoneyUseCase
+
     ) {
         navigator = new MenuNavigator(this);
 
         this.scanner = new Scanner(System.in);
-        this.mainMenu = new MainMenu(userRegistrationUseCase, userLoginUseCase, walletRegistrationUseCase, scanner, navigator).build();
-        this.exchangeMenu = new ExchangeMenu(userLogoutUseCase, viewWalletBalanceUseCase, getCurrentUseCase, navigator).build();
+        this.mainMenu = new MainMenu
+                (
+                        userRegistrationUseCase,
+                        userLoginUseCase,
+                        walletRegistrationUseCase,
+                        scanner,
+                        navigator
+                ).build();
+        this.exchangeMenu = new ExchangeMenu
+                (
+                        userLogoutUseCase,
+                        viewWalletBalanceUseCase,
+                        getCurrentUseCase,
+                        depositMoneyUseCase,
+                        scanner,
+                        navigator
+                ).build();
         this.currentMenu = mainMenu;
 
         navigator.register(MenuNavigator.MAIN_MENU, mainMenu);
