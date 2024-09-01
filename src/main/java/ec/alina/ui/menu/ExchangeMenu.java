@@ -1,6 +1,6 @@
 package ec.alina.ui.menu;
 
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.domain.enums.CryptoType;
 import ec.alina.domain.enums.TransactionType;
 import ec.alina.domain.models.Transaction;
 import ec.alina.domain.models.User;
@@ -24,9 +24,9 @@ public class ExchangeMenu extends Menu {
     private final GetCurrentUseCase getCurrentUseCase;
     private final DepositMoneyUseCase depositMoneyUseCase;
     private final ViewTransactionHistoryUseCase viewTransactionHistoryUseCase;
+    private final BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase;
     private final Scanner scanner;
     private final MenuNavigator navigator;
-
 
     public ExchangeMenu(
             UserLogoutUseCase userLogoutUseCase,
@@ -34,6 +34,7 @@ public class ExchangeMenu extends Menu {
             GetCurrentUseCase getCurrentUseCase,
             DepositMoneyUseCase depositMoneyUseCase,
             ViewTransactionHistoryUseCase viewTransactionHistoryUseCase,
+            BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase,
             Scanner scanner,
             MenuNavigator navigator) {
         super("Crypto Exchange Menu");
@@ -42,6 +43,7 @@ public class ExchangeMenu extends Menu {
         this.getCurrentUseCase = getCurrentUseCase;
         this.depositMoneyUseCase = depositMoneyUseCase;
         this.viewTransactionHistoryUseCase = viewTransactionHistoryUseCase;
+        this.buyCryptoDirectlyUseCase = buyCryptoDirectlyUseCase;
         this.scanner = scanner;
         this.navigator = navigator;
     }
@@ -49,9 +51,10 @@ public class ExchangeMenu extends Menu {
     @Override
     public Menu build() {
         addItem(new MenuItem(1, "Deposit money", this::onDeposit));
-        addItem(new MenuItem(2, "View wallet balance", this::onViewWalletBalance));
-        addItem(new MenuItem(3, "View transaction history", this::onViewTransactionHistory));
-        addItem(new LogoutMenuItem(3, userLogoutUseCase, navigator));
+        addItem(new MenuItem(2, "Direct crypto purchase", this::onDirectCryptoPurchase));
+        addItem(new MenuItem(3, "View wallet balance", this::onViewWalletBalance));
+        addItem(new MenuItem(4, "View transaction history", this::onViewTransactionHistory));
+        addItem(new LogoutMenuItem(5, userLogoutUseCase, navigator));
         return this;
     }
 
@@ -61,10 +64,10 @@ public class ExchangeMenu extends Menu {
         User currentUser = getCurrentUseCase.invoke();
         Wallet wallet = viewWalletBalanceUseCase.invoke(currentUser.getId());
         BigDecimal currentBalance = wallet.getFiatBalance();
-        ConcurrentMap<CrytoType, BigDecimal> currentCryptoHoldings = wallet.getCrytoHoldings();
+        ConcurrentMap<CryptoType, BigDecimal> currentCryptoHoldings = wallet.getCrytoHoldings();
         out.println("Fiat balance: " + "$" + currentBalance);
         out.println("----------------- Crypto holdings ----------------- ");
-        for (CrytoType cryptoType : currentCryptoHoldings.keySet()) {
+        for (CryptoType cryptoType : currentCryptoHoldings.keySet()) {
             out.println(index + ". " + cryptoType + ": " + currentCryptoHoldings.get(cryptoType));
             index++;
         }
@@ -91,23 +94,44 @@ public class ExchangeMenu extends Menu {
         }
     }
 
-
     private void onViewTransactionHistory() {
         AtomicInteger counter = new AtomicInteger(1);
         out.println("--------------- Transaction history ----------------");
         List<Transaction> userTransactions = viewTransactionHistoryUseCase.invoke(getCurrentUseCase.invoke().getId());
         userTransactions.forEach(transaction -> {
             String transactionNumber = String.format("TC%02d", counter.getAndIncrement());
-            String amountSign = transaction.getTransactionType() == TransactionType.BUY ? "+" : "-";
+            String amountSign = transaction.getTransactionType() == TransactionType.BUY ? "-" : "+";
             String formattedPrice = amountSign + "$" + transaction.getPrice().toString();
             String amount = transaction.getAmount().toString();
 
             out.println("---------------- "+transactionNumber+ " ----------------");
             out.println("Transaction type: " + transaction.getTransactionType());
-            out.println("Crypto currency: " + amount + transaction.getTransactionType());
+            out.println("Crypto currency: " + amount + transaction.getCryptoCurrency());
             out.println("Price: " + formattedPrice);
-            out.println();
         });
+    }
 
+    private void onDirectCryptoPurchase() {
+        out.println("Enter the crypto currency you want to buy: ");
+        String cryptoCurrency = scanner.nextLine();
+        out.println("Enter the amount you want to buy: ");
+        String amount = scanner.nextLine();
+
+
+        if (!InputValidator.isValidNumber(amount)) {
+            out.println("Invalid amount entered. Please enter a valid number.");
+            return;
+        }
+
+        CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
+        BigDecimal cryptoAmount = new BigDecimal(amount);
+
+        try {
+            buyCryptoDirectlyUseCase.invoke(cryptoType, cryptoAmount);
+            out.println("Purchase successful");
+        } catch (Exception ex) {
+            out.println("Something went wrong!");
+            out.println(ex.getMessage());
+        }
     }
 }

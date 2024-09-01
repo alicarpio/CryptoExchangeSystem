@@ -1,6 +1,6 @@
 package ec.alina.domain.models;
 
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.domain.enums.CryptoType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,15 +8,15 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Exchange {
-    private Map<CrytoType,Integer> initialFunds;
-    private BlockingDeque<OrderTask> orders;
+    private final Map<CryptoType,CryptoCurrencyData> initialFunds;
+    private final BlockingDeque<OrderTask> orders;
 
-    public Exchange(Map<CrytoType,Integer> initialFunds) {
+    public Exchange(Map<CryptoType,CryptoCurrencyData> initialFunds) {
         this.initialFunds = new HashMap<>(initialFunds);
         orders = new LinkedBlockingDeque<>();
     }
 
-    public Map<CrytoType, Integer> getInitialFunds() {
+    public Map<CryptoType, CryptoCurrencyData> getInitialFunds() {
         return initialFunds;
     }
 

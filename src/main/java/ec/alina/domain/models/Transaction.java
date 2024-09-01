@@ -1,6 +1,6 @@
 package ec.alina.domain.models;
 
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.domain.enums.CryptoType;
 import ec.alina.domain.enums.TransactionType;
 
 import java.math.BigDecimal;
@@ -8,14 +8,14 @@ import java.util.UUID;
 
 public class Transaction {
     private final UUID id = UUID.randomUUID();
-    private final CrytoType cryptoCurrency;
+    private final CryptoType cryptoCurrency;
     private final BigDecimal amount;
     private final BigDecimal price;
     private final TransactionType transactionType;
     private final UUID sellerId;
     private final UUID buyerId;
 
-    public Transaction(CrytoType cryptoCurrency, BigDecimal amount, BigDecimal price, TransactionType transactionType, UUID sellerId, UUID buyerId) {
+    public Transaction(CryptoType cryptoCurrency, BigDecimal amount, BigDecimal price, TransactionType transactionType, UUID sellerId, UUID buyerId) {
         this.cryptoCurrency = cryptoCurrency;
         this.amount = amount;
         this.price = price;
@@ -24,7 +24,7 @@ public class Transaction {
         this.buyerId = buyerId;
     }
 
-    public CrytoType getCryptoCurrency() {
+    public CryptoType getCryptoCurrency() {
         return cryptoCurrency;
     }
 

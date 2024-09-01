@@ -5,7 +5,8 @@ import ec.alina.data.repositories.InMemoryTransactionRepository;
 import ec.alina.data.repositories.InMemoryUserRepository;
 import ec.alina.data.repositories.InMemoryWalletRepository;
 import ec.alina.domain.config.BootAdapter;
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.domain.enums.CryptoType;
+import ec.alina.domain.models.CryptoCurrencyData;
 import ec.alina.domain.models.Exchange;
 import ec.alina.domain.repositories.SessionRepository;
 import ec.alina.domain.repositories.TransactionRepository;
@@ -15,6 +16,7 @@ import ec.alina.domain.use_cases.*;
 import ec.alina.domain.validations.UserValidator;
 import ec.alina.ui.ConsoleAdapter;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,10 +27,10 @@ public class CryptoExchangeSystem {
     }
 
     private static void initializeExchange() {
-        Map<CrytoType,Integer> initialFunds = new HashMap<>();
-        initialFunds.put(CrytoType.BTC, 100);
-        initialFunds.put(CrytoType.ETH, 50);
-        initialFunds.put(CrytoType.LTC, 25);
+        Map<CryptoType,CryptoCurrencyData> initialFunds = new HashMap<>();
+        initialFunds.put(CryptoType.BTC, new CryptoCurrencyData(new BigDecimal("50.000"), new BigDecimal("100")));
+        initialFunds.put(CryptoType.ETH, new CryptoCurrencyData(new BigDecimal("3.000"), new BigDecimal("50")));
+        initialFunds.put(CryptoType.LTC, new CryptoCurrencyData(new BigDecimal("1.000"), new BigDecimal("25")));
         exchange = new Exchange(initialFunds);
     }
 
@@ -48,6 +50,7 @@ public class CryptoExchangeSystem {
         WalletRegistrationUseCase walletRegistrationUseCase = new WalletRegistrationUseCase(walletRepository);
         DepositMoneyUseCase depositMoneyUseCase = new DepositMoneyUseCase(walletRepository);
         ViewTransactionHistoryUseCase viewTransactionHistoryUseCase = new ViewTransactionHistoryUseCase(transactionRepository);
+        BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase = new BuyCryptoDirectlyUseCase(walletRepository, transactionRepository, sessionRepository);
 
         BootAdapter bootAdapter = new ConsoleAdapter
                 (
@@ -58,7 +61,8 @@ public class CryptoExchangeSystem {
                         walletRegistrationUseCase,
                         viewWalletBalanceUseCase,
                         depositMoneyUseCase,
-                        viewTransactionHistoryUseCase
+                        viewTransactionHistoryUseCase,
+                        buyCryptoDirectlyUseCase
                 );
         bootAdapter.boot();
     }

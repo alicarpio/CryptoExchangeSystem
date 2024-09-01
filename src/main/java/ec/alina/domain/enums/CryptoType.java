@@ -1,6 +1,6 @@
 package ec.alina.domain.enums;
 
-public enum CrytoType {
+public enum CryptoType {
     BTC,
     ETH,
     LTC
