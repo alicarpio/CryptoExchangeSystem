@@ -1,7 +1,14 @@
 package ec.alina.domain.validations;
 
+import java.math.BigDecimal;
+
 public class InputValidator {
     public static boolean isValidNumber(String str) {
-        return str != null && str.matches("[0-9.]+");
+            try {
+                new BigDecimal(str);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
     }
 }
