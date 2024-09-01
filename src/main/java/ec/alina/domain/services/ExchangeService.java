@@ -1,8 +1,14 @@
-package ec.alina.domain.repositories;
+package ec.alina.domain.services;
 
+import ec.alina.domain.enums.CryptoType;
 import ec.alina.domain.models.BuyOrder;
+import ec.alina.domain.models.CryptoCurrencyData;
 import ec.alina.domain.models.Exchange;
 import ec.alina.domain.models.SellOrder;
+import ec.alina.domain.repositories.OrderFulfilledCallback;
+
+import java.util.Map;
+import java.util.UUID;
 
 public interface ExchangeService {
 
@@ -10,5 +16,7 @@ public interface ExchangeService {
 
     void placeBuyOrder(BuyOrder buyOrder, OrderFulfilledCallback callback);
 
-    Exchange save(Exchange exchange);
+    Map<CryptoType, CryptoCurrencyData> getFunds();
+
+    UUID getId();
 }

@@ -8,6 +8,7 @@ import ec.alina.domain.models.Wallet;
 import ec.alina.domain.use_cases.*;
 import ec.alina.domain.validations.InputValidator;
 import ec.alina.domain.validations.exceptions.IllegalAmountException;
+import ec.alina.domain.validations.exceptions.ValidationException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -106,7 +107,7 @@ public class ExchangeMenu extends Menu {
 
             out.println("---------------- "+transactionNumber+ " ----------------");
             out.println("Transaction type: " + transaction.getTransactionType());
-            out.println("Crypto currency: " + amount + transaction.getCryptoCurrency());
+            out.println("Crypto currency: " + amount + " "+ transaction.getCryptoCurrency());
             out.println("Price: " + formattedPrice);
         });
     }
@@ -123,13 +124,19 @@ public class ExchangeMenu extends Menu {
             return;
         }
 
+        if (!InputValidator.isValidCrypto(cryptoCurrency.toUpperCase())) {
+            out.println("Invalid crypto currency entered. Please enter a valid crypto currency.");
+            return;
+        }
+
         CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
+
         BigDecimal cryptoAmount = new BigDecimal(amount);
 
         try {
             buyCryptoDirectlyUseCase.invoke(cryptoType, cryptoAmount);
             out.println("Purchase successful");
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             out.println("Something went wrong!");
             out.println(ex.getMessage());
         }

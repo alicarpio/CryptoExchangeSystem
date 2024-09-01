@@ -12,8 +12,10 @@ import ec.alina.domain.repositories.SessionRepository;
 import ec.alina.domain.repositories.TransactionRepository;
 import ec.alina.domain.repositories.UserRepository;
 import ec.alina.domain.repositories.WalletRepository;
+import ec.alina.domain.services.ExchangeService;
 import ec.alina.domain.use_cases.*;
 import ec.alina.domain.validations.UserValidator;
+import ec.alina.services.ExchangeServiceImpl;
 import ec.alina.ui.ConsoleAdapter;
 
 import java.math.BigDecimal;
@@ -28,9 +30,9 @@ public class CryptoExchangeSystem {
 
     private static void initializeExchange() {
         Map<CryptoType,CryptoCurrencyData> initialFunds = new HashMap<>();
-        initialFunds.put(CryptoType.BTC, new CryptoCurrencyData(new BigDecimal("50.000"), new BigDecimal("100")));
-        initialFunds.put(CryptoType.ETH, new CryptoCurrencyData(new BigDecimal("3.000"), new BigDecimal("50")));
-        initialFunds.put(CryptoType.LTC, new CryptoCurrencyData(new BigDecimal("1.000"), new BigDecimal("25")));
+        initialFunds.put(CryptoType.BTC, new CryptoCurrencyData(new BigDecimal("50000"), new BigDecimal("100")));
+        initialFunds.put(CryptoType.ETH, new CryptoCurrencyData(new BigDecimal("3000"), new BigDecimal("50")));
+        initialFunds.put(CryptoType.LTC, new CryptoCurrencyData(new BigDecimal("1000"), new BigDecimal("25")));
         exchange = new Exchange(initialFunds);
     }
 
@@ -41,6 +43,7 @@ public class CryptoExchangeSystem {
         SessionRepository sessionRepository = new InMemorySessionRepository();
         WalletRepository walletRepository = new InMemoryWalletRepository();
         TransactionRepository transactionRepository = new InMemoryTransactionRepository();
+        ExchangeService exchangeService = new ExchangeServiceImpl(exchange);
 
         UserRegistrationUseCase userRegistrationUseCase = new UserRegistrationUseCase(userRepository, new UserValidator());
         UserLoginUseCase userLoginUseCase = new UserLoginUseCase(userRepository, sessionRepository);
@@ -50,7 +53,7 @@ public class CryptoExchangeSystem {
         WalletRegistrationUseCase walletRegistrationUseCase = new WalletRegistrationUseCase(walletRepository);
         DepositMoneyUseCase depositMoneyUseCase = new DepositMoneyUseCase(walletRepository);
         ViewTransactionHistoryUseCase viewTransactionHistoryUseCase = new ViewTransactionHistoryUseCase(transactionRepository);
-        BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase = new BuyCryptoDirectlyUseCase(walletRepository, transactionRepository, sessionRepository);
+        BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase = new BuyCryptoDirectlyUseCase(walletRepository, transactionRepository, sessionRepository, exchangeService);
 
         BootAdapter bootAdapter = new ConsoleAdapter
                 (
