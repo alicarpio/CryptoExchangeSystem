@@ -16,8 +16,4 @@ public class NumberValidator implements Validator<BigDecimal> {
             throw new IllegalAmountException(fieldName + " must be greater than 0.");
         }
     }
-
-    public static boolean isValidNumber(String str) {
-        return InputValidator.isValidNumber(str);
-    }
 }
