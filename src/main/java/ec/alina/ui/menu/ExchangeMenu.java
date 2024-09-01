@@ -7,7 +7,6 @@ import ec.alina.domain.models.User;
 import ec.alina.domain.models.Wallet;
 import ec.alina.domain.use_cases.*;
 import ec.alina.domain.validations.InputValidator;
-import ec.alina.domain.validations.NumberValidator;
 import ec.alina.domain.validations.exceptions.IllegalAmountException;
 
 import java.math.BigDecimal;
@@ -24,7 +23,7 @@ public class ExchangeMenu extends Menu {
     private final ViewWalletBalanceUseCase viewWalletBalanceUseCase;
     private final GetCurrentUseCase getCurrentUseCase;
     private final DepositMoneyUseCase depositMoneyUseCase;
-//    private final ViewTransactionHistoryUseCase viewTransactionHistoryUseCase;
+    private final ViewTransactionHistoryUseCase viewTransactionHistoryUseCase;
     private final Scanner scanner;
     private final MenuNavigator navigator;
 
@@ -34,7 +33,7 @@ public class ExchangeMenu extends Menu {
             ViewWalletBalanceUseCase viewWalletBalanceUseCase,
             GetCurrentUseCase getCurrentUseCase,
             DepositMoneyUseCase depositMoneyUseCase,
-//            ViewTransactionHistoryUseCase viewTransactionHistoryUseCase,
+            ViewTransactionHistoryUseCase viewTransactionHistoryUseCase,
             Scanner scanner,
             MenuNavigator navigator) {
         super("Crypto Exchange Menu");
@@ -42,7 +41,7 @@ public class ExchangeMenu extends Menu {
         this.viewWalletBalanceUseCase = viewWalletBalanceUseCase;
         this.getCurrentUseCase = getCurrentUseCase;
         this.depositMoneyUseCase = depositMoneyUseCase;
-//        this.viewTransactionHistoryUseCase = viewTransactionHistoryUseCase;
+        this.viewTransactionHistoryUseCase = viewTransactionHistoryUseCase;
         this.scanner = scanner;
         this.navigator = navigator;
     }
@@ -51,7 +50,7 @@ public class ExchangeMenu extends Menu {
     public Menu build() {
         addItem(new MenuItem(1, "Deposit money", this::onDeposit));
         addItem(new MenuItem(2, "View wallet balance", this::onViewWalletBalance));
-//        addItem(new MenuItem(3, "View transaction history", this::onViewTransactionHistory));
+        addItem(new MenuItem(3, "View transaction history", this::onViewTransactionHistory));
         addItem(new LogoutMenuItem(3, userLogoutUseCase, navigator));
         return this;
     }
@@ -93,22 +92,22 @@ public class ExchangeMenu extends Menu {
     }
 
 
-//    private void onViewTransactionHistory() {
-//        AtomicInteger counter = new AtomicInteger(1);
-//        out.println("--------------- Transaction history ----------------");
-//        List<Transaction> userTransactions = viewTransactionHistoryUseCase.invoke(getCurrentUseCase.invoke().getId());
-//        userTransactions.forEach(transaction -> {
-//            String transactionNumber = String.format("TC%02d", counter.getAndIncrement());
-//            String amountSign = transaction.getTransactionType() == TransactionType.BUY ? "+" : "-";
-//            String formattedPrice = amountSign + "$" + transaction.getPrice().toString();
-//            String amount = transaction.getAmount().toString();
-//
-//            out.println("---------------- "+transactionNumber+ " ----------------");
-//            out.println("Transaction type: " + transaction.getTransactionType());
-//            out.println("Crypto currency: " + amount + transaction.getTransactionType());
-//            out.println("Price: " + formattedPrice);
-//            out.println();
-//        });
-//
-//    }
+    private void onViewTransactionHistory() {
+        AtomicInteger counter = new AtomicInteger(1);
+        out.println("--------------- Transaction history ----------------");
+        List<Transaction> userTransactions = viewTransactionHistoryUseCase.invoke(getCurrentUseCase.invoke().getId());
+        userTransactions.forEach(transaction -> {
+            String transactionNumber = String.format("TC%02d", counter.getAndIncrement());
+            String amountSign = transaction.getTransactionType() == TransactionType.BUY ? "+" : "-";
+            String formattedPrice = amountSign + "$" + transaction.getPrice().toString();
+            String amount = transaction.getAmount().toString();
+
+            out.println("---------------- "+transactionNumber+ " ----------------");
+            out.println("Transaction type: " + transaction.getTransactionType());
+            out.println("Crypto currency: " + amount + transaction.getTransactionType());
+            out.println("Price: " + formattedPrice);
+            out.println();
+        });
+
+    }
 }

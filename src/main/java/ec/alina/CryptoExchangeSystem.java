@@ -1,12 +1,14 @@
 package ec.alina;
 
 import ec.alina.data.repositories.InMemorySessionRepository;
+import ec.alina.data.repositories.InMemoryTransactionRepository;
 import ec.alina.data.repositories.InMemoryUserRepository;
 import ec.alina.data.repositories.InMemoryWalletRepository;
 import ec.alina.domain.config.BootAdapter;
 import ec.alina.domain.enums.CrytoType;
 import ec.alina.domain.models.Exchange;
 import ec.alina.domain.repositories.SessionRepository;
+import ec.alina.domain.repositories.TransactionRepository;
 import ec.alina.domain.repositories.UserRepository;
 import ec.alina.domain.repositories.WalletRepository;
 import ec.alina.domain.use_cases.*;
@@ -36,6 +38,7 @@ public class CryptoExchangeSystem {
         UserRepository userRepository = new InMemoryUserRepository();
         SessionRepository sessionRepository = new InMemorySessionRepository();
         WalletRepository walletRepository = new InMemoryWalletRepository();
+        TransactionRepository transactionRepository = new InMemoryTransactionRepository();
 
         UserRegistrationUseCase userRegistrationUseCase = new UserRegistrationUseCase(userRepository, new UserValidator());
         UserLoginUseCase userLoginUseCase = new UserLoginUseCase(userRepository, sessionRepository);
@@ -44,6 +47,7 @@ public class CryptoExchangeSystem {
         ViewWalletBalanceUseCase viewWalletBalanceUseCase = new ViewWalletBalanceUseCase(walletRepository);
         WalletRegistrationUseCase walletRegistrationUseCase = new WalletRegistrationUseCase(walletRepository);
         DepositMoneyUseCase depositMoneyUseCase = new DepositMoneyUseCase(walletRepository);
+        ViewTransactionHistoryUseCase viewTransactionHistoryUseCase = new ViewTransactionHistoryUseCase(transactionRepository);
 
         BootAdapter bootAdapter = new ConsoleAdapter
                 (
@@ -53,7 +57,8 @@ public class CryptoExchangeSystem {
                         getCurrentUseCase,
                         walletRegistrationUseCase,
                         viewWalletBalanceUseCase,
-                        depositMoneyUseCase
+                        depositMoneyUseCase,
+                        viewTransactionHistoryUseCase
                 );
         bootAdapter.boot();
     }
