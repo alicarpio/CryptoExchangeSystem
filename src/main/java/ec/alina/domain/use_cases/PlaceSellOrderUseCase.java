@@ -10,7 +10,6 @@ import ec.alina.domain.validations.Validator;
 import ec.alina.domain.validations.exceptions.ValidationException;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class PlaceSellOrderUseCase {
     private final ExchangeService exchangeService;
@@ -25,8 +24,7 @@ public class PlaceSellOrderUseCase {
     }
 
     public void invoke(CryptoType cryptoType, BigDecimal amount, BigDecimal minimumPrice) throws ValidationException{
-        UUID currentUserId = session.getCurrentUser().getId();
-        SellOrder sellOrder = new SellOrder(cryptoType, amount, minimumPrice,currentUserId);
+        SellOrder sellOrder = new SellOrder(cryptoType, amount, minimumPrice,session.getCurrentUser().getId());
         validator.validate(sellOrder);
         exchangeService.placeSellOrder(sellOrder);
     }

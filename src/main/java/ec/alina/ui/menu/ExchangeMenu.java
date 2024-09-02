@@ -26,6 +26,8 @@ public class ExchangeMenu extends Menu {
     private final DepositMoneyUseCase depositMoneyUseCase;
     private final ViewTransactionHistoryUseCase viewTransactionHistoryUseCase;
     private final BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase;
+    private final PlaceBuyOrderUseCase placeBuyOrderUseCase;
+    private final PlaceSellOrderUseCase placeSellOrderUseCase;
     private final Scanner scanner;
     private final MenuNavigator navigator;
 
@@ -36,6 +38,8 @@ public class ExchangeMenu extends Menu {
             DepositMoneyUseCase depositMoneyUseCase,
             ViewTransactionHistoryUseCase viewTransactionHistoryUseCase,
             BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase,
+            PlaceBuyOrderUseCase placeBuyOrderUseCase,
+            PlaceSellOrderUseCase placeSellOrderUseCase,
             Scanner scanner,
             MenuNavigator navigator) {
         super("Crypto Exchange Menu");
@@ -45,6 +49,8 @@ public class ExchangeMenu extends Menu {
         this.depositMoneyUseCase = depositMoneyUseCase;
         this.viewTransactionHistoryUseCase = viewTransactionHistoryUseCase;
         this.buyCryptoDirectlyUseCase = buyCryptoDirectlyUseCase;
+        this.placeBuyOrderUseCase = placeBuyOrderUseCase;
+        this.placeSellOrderUseCase = placeSellOrderUseCase;
         this.scanner = scanner;
         this.navigator = navigator;
     }
@@ -52,9 +58,11 @@ public class ExchangeMenu extends Menu {
     @Override
     public Menu build() {
         addItem(new MenuItem(1, "Deposit money", this::onDeposit));
-        addItem(new MenuItem(2, "Direct crypto purchase", this::onDirectCryptoPurchase));
-        addItem(new MenuItem(3, "View wallet balance", this::onViewWalletBalance));
-        addItem(new MenuItem(4, "View transaction history", this::onViewTransactionHistory));
+        addItem(new MenuItem(2, "Place direct crypto purchase", this::onDirectCryptoPurchase));
+        addItem(new MenuItem(3, "Place Buy Order", this::onPlaceBuyOrder));
+        addItem(new MenuItem(4, "Place Sell Order", this::onPlaceSellOrder));
+        addItem(new MenuItem(5, "View wallet balance", this::onViewWalletBalance));
+        addItem(new MenuItem(6, "View transaction history", this::onViewTransactionHistory));
         addItem(new LogoutMenuItem(5, userLogoutUseCase, navigator));
         return this;
     }
@@ -69,7 +77,7 @@ public class ExchangeMenu extends Menu {
         out.println("Fiat balance: " + "$" + currentBalance);
         out.println("----------------- Crypto holdings ----------------- ");
         for (CryptoType cryptoType : currentCryptoHoldings.keySet()) {
-            out.println(index + ". " + cryptoType + ": " + currentCryptoHoldings.get(cryptoType));
+            out.printf("%d. %s: %s%n", index, cryptoType, currentCryptoHoldings.get(cryptoType));
             index++;
         }
         out.println(" ");
@@ -105,10 +113,11 @@ public class ExchangeMenu extends Menu {
             String formattedPrice = amountSign + "$" + transaction.getPrice().toString();
             String amount = transaction.getAmount().toString();
 
-            out.println("---------------- "+transactionNumber+ " ----------------");
+            out.println("---------------------- "+transactionNumber+ " ----------------------");
             out.println("Transaction type: " + transaction.getTransactionType());
             out.println("Crypto currency: " + amount + " "+  transaction.getCryptoCurrency());
             out.println("Price: " + formattedPrice);
+            out.println(" ");
         });
     }
 
@@ -137,6 +146,63 @@ public class ExchangeMenu extends Menu {
             buyCryptoDirectlyUseCase.invoke(cryptoType, cryptoAmount);
             out.println("Purchase successful");
         } catch (ValidationException ex) {
+            out.println("Something went wrong!");
+            out.println(ex.getMessage());
+        }
+    }
+
+    private void onPlaceBuyOrder() {
+        out.println("Enter the type of crypto currency you want to buy: ");
+        String cryptoCurrency = scanner.nextLine();
+        out.println("Enter the amount you want to buy: ");
+        String amount = scanner.nextLine();
+        out.println("Enter the maximum price you are willing to pay: ");
+        String price = scanner.nextLine();
+
+        if (!InputValidator.isValidNumber(amount) || !InputValidator.isValidNumber(price)) {
+            out.println("Invalid amount entered. Please enter a valid number.");
+            return;
+        }
+
+        if (!InputValidator.isValidCrypto(cryptoCurrency.toUpperCase())) {
+            out.println("Invalid crypto currency entered. Please enter a valid crypto currency.");
+            return;
+        }
+
+        CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
+
+        try{
+            placeBuyOrderUseCase.invoke(cryptoType, new BigDecimal(amount), new BigDecimal(price));
+            out.println("Order placed successfully");
+        }catch (ValidationException ex) {
+            out.println("Something went wrong!");
+            out.println(ex.getMessage());
+        }
+    }
+
+    private void onPlaceSellOrder() {
+        out.println("Enter the type of crypto currency you want to sell: ");
+        String cryptoCurrency = scanner.nextLine();
+        out.println("Enter the amount you want to sell: ");
+        String amount = scanner.nextLine();
+        out.println("Enter the minimum price you are willing to accept: ");
+        String price = scanner.nextLine();
+
+        if (!InputValidator.isValidNumber(amount) || !InputValidator.isValidNumber(price)) {
+            out.println("Invalid amount entered. Please enter a valid number.");
+            return;
+        }
+
+        if (!InputValidator.isValidCrypto(cryptoCurrency.toUpperCase())) {
+            out.println("Invalid crypto currency entered. Please enter a valid crypto currency.");
+            return;
+        }
+
+        CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
+        try{
+            placeSellOrderUseCase.invoke(cryptoType, new BigDecimal(amount), new BigDecimal(price));
+            out.println("Order placed successfully");
+        }catch (ValidationException ex) {
             out.println("Something went wrong!");
             out.println(ex.getMessage());
         }

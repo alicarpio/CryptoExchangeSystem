@@ -14,6 +14,8 @@ import ec.alina.domain.repositories.UserRepository;
 import ec.alina.domain.repositories.WalletRepository;
 import ec.alina.domain.services.ExchangeService;
 import ec.alina.domain.use_cases.*;
+import ec.alina.domain.validations.BuyOrderValidator;
+import ec.alina.domain.validations.SellOrderValidator;
 import ec.alina.domain.validations.UserValidator;
 import ec.alina.services.ExchangeServiceImpl;
 import ec.alina.ui.ConsoleAdapter;
@@ -43,7 +45,7 @@ public class CryptoExchangeSystem {
         SessionRepository sessionRepository = new InMemorySessionRepository();
         WalletRepository walletRepository = new InMemoryWalletRepository();
         TransactionRepository transactionRepository = new InMemoryTransactionRepository();
-        ExchangeService exchangeService = new ExchangeServiceImpl(exchange);
+        ExchangeService exchangeService = new ExchangeServiceImpl(exchange,walletRepository,transactionRepository);
 
         UserRegistrationUseCase userRegistrationUseCase = new UserRegistrationUseCase(userRepository, new UserValidator());
         UserLoginUseCase userLoginUseCase = new UserLoginUseCase(userRepository, sessionRepository);
@@ -54,6 +56,8 @@ public class CryptoExchangeSystem {
         DepositMoneyUseCase depositMoneyUseCase = new DepositMoneyUseCase(walletRepository);
         ViewTransactionHistoryUseCase viewTransactionHistoryUseCase = new ViewTransactionHistoryUseCase(transactionRepository);
         BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase = new BuyCryptoDirectlyUseCase(walletRepository, transactionRepository, sessionRepository, exchangeService);
+        PlaceBuyOrderUseCase placeBuyOrderUseCase = new PlaceBuyOrderUseCase(exchangeService, new BuyOrderValidator(), sessionRepository);
+        PlaceSellOrderUseCase placeSellOrderUseCase = new PlaceSellOrderUseCase(exchangeService, new SellOrderValidator(), sessionRepository);
 
         BootAdapter bootAdapter = new ConsoleAdapter
                 (
@@ -65,7 +69,9 @@ public class CryptoExchangeSystem {
                         viewWalletBalanceUseCase,
                         depositMoneyUseCase,
                         viewTransactionHistoryUseCase,
-                        buyCryptoDirectlyUseCase
+                        buyCryptoDirectlyUseCase,
+                        placeBuyOrderUseCase,
+                        placeSellOrderUseCase
                 );
         bootAdapter.boot();
     }

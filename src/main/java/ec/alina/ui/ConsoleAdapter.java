@@ -26,7 +26,10 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
             ViewWalletBalanceUseCase viewWalletBalanceUseCase,
             DepositMoneyUseCase depositMoneyUseCase,
             ViewTransactionHistoryUseCase viewTransactionHistoryUseCase,
-            BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase
+            BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase,
+            PlaceBuyOrderUseCase placeBuyOrderUseCase,
+            PlaceSellOrderUseCase placeSellOrderUseCase
+
 
     ) {
         navigator = new MenuNavigator(this);
@@ -48,6 +51,8 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
                         depositMoneyUseCase,
                         viewTransactionHistoryUseCase,
                         buyCryptoDirectlyUseCase,
+                        placeBuyOrderUseCase,
+                        placeSellOrderUseCase,
                         scanner,
                         navigator
                 ).build();
