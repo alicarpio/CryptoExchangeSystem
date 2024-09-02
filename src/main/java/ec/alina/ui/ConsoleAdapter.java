@@ -65,7 +65,7 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
 
     @Override
     public void boot() {
-        System.out.println("------------------ Welcome to the Crypto Exchange System --------------------");
+        System.out.println("\u001b[35m ------------------ Welcome to the Crypto Exchange System -------------------- \u001b[0m");
         while (true) {
             try {
                 currentMenu.show();

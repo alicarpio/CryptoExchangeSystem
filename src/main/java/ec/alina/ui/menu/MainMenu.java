@@ -41,7 +41,7 @@ public class MainMenu extends Menu {
     }
 
     private void onLogin() {
-        out.println("----------- Log in -----------");
+        out.println("\u001b[35m --------------------- Log in --------------------- \u001b[0m");
         out.println("Enter your email: ");
         String userEmail = scanner.nextLine();
         out.println("Enter your password: ");
@@ -49,16 +49,16 @@ public class MainMenu extends Menu {
 
         try {
             userLoginUseCase.invoke(userEmail, userPassword);
-            out.println("Log in successful");
+            out.println("\u001b[46m  Log in successful  \u001b[0m");
             navigator.navigateTo(MenuNavigator.EXCHANGE_MENU);
         } catch (InvalidEmailOrPasswordException ex) {
-            out.println(ex.getMessage());
-            out.println("Something went wrong!");
+            out.println("\u001b[41m    Something went wrong!    \u001b[0m");
+            out.println("\u001b[31m"+ex.getMessage()+"\u001b[0m");
         }
     }
 
     private void onRegisterUser() {
-        out.println("----------- Registration -----------");
+        out.println("\u001b[35m ------------------- Registration ------------------- \u001b[0m");
         out.println("Enter your name: ");
         String userName = scanner.nextLine();
         out.println("Enter your email: ");
@@ -69,10 +69,11 @@ public class MainMenu extends Menu {
         try {
             User newUser = userRegistrationUseCase.invoke(userName, userEmail, userPassword);
             walletRegistrationUseCase.invoke(newUser.getId());
-            out.println("User registration successful");
+            out.println("\u001b[46m  User registration successful  \u001b[0m");
         } catch (ValidationException ex) {
-            out.println(ex.getMessage());
-            out.println("The user could not be saved");
+            out.println("\u001b[41m The user could not be saved! \u001b[0m");
+            out.println("\u001b[31m"+ex.getMessage()+"\u001b[0m");
+
         }
     }
 }

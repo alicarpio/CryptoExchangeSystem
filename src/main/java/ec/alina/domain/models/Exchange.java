@@ -5,6 +5,7 @@ import ec.alina.domain.enums.CryptoType;
 
 import java.util.*;
 import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Exchange {
@@ -15,7 +16,7 @@ public class Exchange {
 
     public Exchange(Map<CryptoType,CryptoCurrencyData> initialFunds) {
         id = Utils.generateUniqueId();
-        this.initialFunds = new HashMap<>(initialFunds);
+        this.initialFunds = new ConcurrentHashMap<>(initialFunds);
         buyOrders = new ArrayList<>();
         sellOrders = new ArrayList<>();
     }

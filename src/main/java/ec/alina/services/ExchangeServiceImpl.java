@@ -35,6 +35,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         UUID sellerId = sellOrder.getUserId();
         Wallet sellerWallet = wallets.findWalletByUserId(sellerId);
 
+
         if (!sellerWallet.getCrytoHoldings().containsKey(cryptoType)){
             throw new CryptoNotFoundException();
         }
@@ -72,8 +73,10 @@ public class ExchangeServiceImpl implements ExchangeService {
         UUID buyerId = buyOrder.getUserId();
         Wallet buyerWallet = wallets.findWalletByUserId(buyerId);
         var funds = exchange.getInitialFunds().get(cryptoType).getPrice();
+        BigDecimal buyerFunds = buyerWallet.getFiatBalance();
 
-        if (funds.compareTo(price) < 0){
+
+        if (buyerFunds.compareTo(price) < 0){
             throw new InsufficientFundsException();
         }
 
