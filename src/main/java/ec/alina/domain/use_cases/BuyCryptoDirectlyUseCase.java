@@ -51,7 +51,7 @@ public class BuyCryptoDirectlyUseCase {
         }
 
         userWallet.setFiatBalance(userWallet.getFiatBalance().subtract(cryptoPrice));
-        userWallet.getCrytoHoldings().put(cryptoType, userWallet.getCrytoHoldings().getOrDefault(cryptoType, BigDecimal.ZERO).add(amount));
+        userWallet.getCrytoHoldings().merge(cryptoType, amount, BigDecimal::add);
 
         BigDecimal newExchangeQuantity = cryptoData.getQuantity().subtract(amount);
         cryptoData.setQuantity(newExchangeQuantity);

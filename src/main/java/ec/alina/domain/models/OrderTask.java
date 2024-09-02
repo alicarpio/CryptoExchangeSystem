@@ -1,10 +1,8 @@
 package ec.alina.domain.models;
 
-import ec.alina.domain.repositories.OrderFulfilledCallback;
-
 public class OrderTask {
-    private Object order;
-    private OrderFulfilledCallback callback;
+    private final Object order;
+    private final OrderFulfilledCallback callback;
 
     public OrderTask(Object order, OrderFulfilledCallback callback) {
         this.order = order;

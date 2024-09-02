@@ -107,7 +107,7 @@ public class ExchangeMenu extends Menu {
 
             out.println("---------------- "+transactionNumber+ " ----------------");
             out.println("Transaction type: " + transaction.getTransactionType());
-            out.println("Crypto currency: " + amount + " "+ transaction.getCryptoCurrency());
+            out.println("Crypto currency: " + amount + " "+  transaction.getCryptoCurrency());
             out.println("Price: " + formattedPrice);
         });
     }
