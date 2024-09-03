@@ -25,16 +25,10 @@ The cryptocurrency exchange system is a platform for trading cryptocurrencies. I
 ## Architecture
 This project implements a Hexagonal (Ports and Adapters) Architecture, which promotes separation of concerns and modularity. The core business logic is isolated from external concerns, making the system more maintainable and adaptable to change.
 
-### Key Components
-- **Domain Layer:** Contains the core business logic and entities
-- **Application Layer:** Orchestrates the flow of data and manages use cases
-- **Infrastructure Layer:** Handles external concerns such as data persistence and UI
-
 ## Design Patterns
 The following design patterns have been utilized in this project:
 - Singleton
-
-
+  
 ## UML Diagram
 ![UML Diagram of Cryptocurrency Exchange System](uml/CryptoExchangeSystemGlobant.jpg)
 
@@ -52,7 +46,7 @@ The Crypto Exchange System has been implemented with the following key features:
 ### Order Management:
 - Placement of buy and sell orders
 - Order book maintenance
-- Efficient order matching algorithm
+- Order matching algorithm
 
 ### Transaction Processing:
 - Atomic execution of matched orders
@@ -69,5 +63,5 @@ The Crypto Exchange System has been implemented with the following key features:
 - Update frequency: Every 5 seconds
 
 ### Error Handling:
-- Robust error checking and validation
+- Error checking and validation
 - User-friendly error messages
