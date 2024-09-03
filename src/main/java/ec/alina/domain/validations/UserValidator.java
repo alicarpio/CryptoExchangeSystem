@@ -15,7 +15,7 @@ public class UserValidator implements Validator<User> {
     }
 
     private void validateEmail(String email) throws InvalidEmailException {
-        if (email == null || !email.contains("@")) {
+        if (email == null || !email.contains("@") || !email.contains(".")) {
             throw new InvalidEmailException();
         }
     }
