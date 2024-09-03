@@ -1,24 +1,24 @@
 package ec.alina.domain.models;
 
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.domain.enums.CryptoType;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public class BuyOrder {
-    private CrytoType cryptoCurrency;
-    private BigDecimal amount;
-    private BigDecimal maximumPrice;
-    private UUID userId;
+    private final CryptoType cryptoCurrency;
+    private final BigDecimal amount;
+    private final BigDecimal maximumPrice;
+    private final UUID userId;
 
-    public BuyOrder(CrytoType cryptoCurrency, BigDecimal amount, BigDecimal maximumPrice, UUID userId) {
+    public BuyOrder(CryptoType cryptoCurrency, BigDecimal amount, BigDecimal maximumPrice, UUID userId) {
         this.cryptoCurrency = cryptoCurrency;
         this.amount = amount;
         this.maximumPrice = maximumPrice;
         this.userId = userId;
     }
 
-    public CrytoType getCryptoCurrency() {
+    public CryptoType getCryptoCurrency() {
         return cryptoCurrency;
     }
 

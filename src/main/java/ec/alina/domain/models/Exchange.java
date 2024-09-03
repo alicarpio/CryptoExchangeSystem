@@ -1,26 +1,50 @@
 package ec.alina.domain.models;
 
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.Utils;
+import ec.alina.domain.enums.CryptoType;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 public class Exchange {
-    private Map<CrytoType,Integer> initialFunds;
-    private BlockingDeque<OrderTask> orders;
+    private final UUID id;
+    private final Map<CryptoType,CryptoCurrencyData> initialFunds;
+    private final List<BuyOrder> buyOrders;
+    private final List<SellOrder> sellOrders;
 
-    public Exchange(Map<CrytoType,Integer> initialFunds) {
-        this.initialFunds = new HashMap<>(initialFunds);
-        orders = new LinkedBlockingDeque<>();
+    public Exchange(Map<CryptoType,CryptoCurrencyData> initialFunds) {
+        id = Utils.generateUniqueId();
+        this.initialFunds = new ConcurrentHashMap<>(initialFunds);
+        buyOrders = new ArrayList<>();
+        sellOrders = new ArrayList<>();
     }
 
-    public Map<CrytoType, Integer> getInitialFunds() {
-        return initialFunds;
+    public synchronized BigDecimal getPriceFor(CryptoType cryptoType) {
+        return initialFunds.get(cryptoType).getPrice();
     }
 
-    public BlockingDeque<OrderTask> getOrders() {
-        return orders;
+    public synchronized void setPriceFor(CryptoType cryptoType, BigDecimal price) {
+        CryptoCurrencyData cryptoData = new CryptoCurrencyData(price, initialFunds.get(cryptoType).getQuantity());
+        initialFunds.put(cryptoType, cryptoData);
+    }
+
+    public <T> T withFunds(Function<Map<CryptoType, CryptoCurrencyData>, ? extends T> callback) {
+        synchronized (this) {
+            return callback.apply(initialFunds);
+        }
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public List<BuyOrder> getBuyOrders() {
+        return buyOrders;
+    }
+
+    public List<SellOrder> getSellOrders() {
+        return sellOrders;
     }
 }

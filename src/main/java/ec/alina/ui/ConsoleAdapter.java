@@ -25,7 +25,11 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
             WalletRegistrationUseCase walletRegistrationUseCase,
             ViewWalletBalanceUseCase viewWalletBalanceUseCase,
             DepositMoneyUseCase depositMoneyUseCase,
-            ViewTransactionHistoryUseCase viewTransactionHistoryUseCase
+            ViewTransactionHistoryUseCase viewTransactionHistoryUseCase,
+            BuyCryptoDirectlyUseCase buyCryptoDirectlyUseCase,
+            PlaceBuyOrderUseCase placeBuyOrderUseCase,
+            PlaceSellOrderUseCase placeSellOrderUseCase
+
 
     ) {
         navigator = new MenuNavigator(this);
@@ -46,6 +50,9 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
                         getCurrentUseCase,
                         depositMoneyUseCase,
                         viewTransactionHistoryUseCase,
+                        buyCryptoDirectlyUseCase,
+                        placeBuyOrderUseCase,
+                        placeSellOrderUseCase,
                         scanner,
                         navigator
                 ).build();
@@ -58,10 +65,11 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
 
     @Override
     public void boot() {
-        System.out.println("------------------ Welcome to the Crypto Exchange System --------------------");
+        System.out.println("\u001b[35m ------------------ Welcome to the Crypto Exchange System -------------------- \u001b[0m");
         while (true) {
             try {
                 currentMenu.show();
+                out.println("Please, enter the number of the option you want to select: ");
                 var itemNumber = Integer.parseInt(scanner.nextLine());
                 var executed = currentMenu.selectItem(itemNumber);
                 if (!executed) {

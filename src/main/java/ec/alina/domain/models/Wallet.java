@@ -1,6 +1,6 @@
 package ec.alina.domain.models;
 
-import ec.alina.domain.enums.CrytoType;
+import ec.alina.domain.enums.CryptoType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -9,9 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class Wallet {
-    private UUID userId;
+    private final UUID userId;
     private BigDecimal fiatBalance;
-    private ConcurrentMap<CrytoType, BigDecimal> crytoHoldings;
+    private final ConcurrentMap<CryptoType, BigDecimal> crytoHoldings;
 
     public Wallet(UUID userId) {
         this.userId = userId;
@@ -27,11 +27,11 @@ public class Wallet {
         return fiatBalance;
     }
 
-    public ConcurrentMap<CrytoType, BigDecimal> getCrytoHoldings() {
-        return crytoHoldings;
-    }
-
     public void setFiatBalance(BigDecimal fiatBalance) {
         this.fiatBalance = fiatBalance;
+    }
+
+    public ConcurrentMap<CryptoType, BigDecimal> getCrytoHoldings() {
+        return crytoHoldings;
     }
 }
