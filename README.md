@@ -36,7 +36,7 @@ The following design patterns have been utilized in this project:
 
 
 ## UML Diagram
-![UML Diagram of Cryptocurrency Exchange System] (uml/CryptoExchangeSystemGlobant.jpg)
+![UML Diagram of Cryptocurrency Exchange System](uml/CryptoExchangeSystemGlobant.jpg)
 
 ## Implementation Details
 The Crypto Exchange System has been implemented with the following key features:
