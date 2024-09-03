@@ -69,6 +69,7 @@ public class ConsoleAdapter implements BootAdapter, MenuNavigatorHost {
         while (true) {
             try {
                 currentMenu.show();
+                out.println("Please, enter the number of the option you want to select: ");
                 var itemNumber = Integer.parseInt(scanner.nextLine());
                 var executed = currentMenu.selectItem(itemNumber);
                 if (!executed) {

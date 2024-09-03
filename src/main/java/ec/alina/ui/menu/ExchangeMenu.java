@@ -59,13 +59,13 @@ public class ExchangeMenu extends Menu {
     @Override
     public Menu build() {
         addItem(new MenuItem(1, "Deposit money", this::onDeposit));
-        addItem(new MenuItem(2, "Place direct crypto purchase", this::onDirectCryptoPurchase));
+        addItem(new MenuItem(2, "Direct crypto purchase", this::onDirectCryptoPurchase));
         addItem(new MenuItem(3, "Place buy Order", this::onPlaceBuyOrder));
         addItem(new MenuItem(4, "Place sell Order", this::onPlaceSellOrder));
         addItem(new MenuItem(5, "View wallet balance", this::onViewWalletBalance));
         addItem(new MenuItem(6, "View transaction history", this::onViewTransactionHistory));
         addItem(new LogoutMenuItem(7, userLogoutUseCase, navigator));
-        addItem(new ExitMenuItem(9));
+        addItem(new ExitMenuItem(8));
         return this;
     }
 
@@ -115,7 +115,7 @@ public class ExchangeMenu extends Menu {
             String formattedPrice = amountSign + "$" + transaction.getPrice().toString();
             String amount = transaction.getAmount().toString();
 
-            out.println("---------------------- "+transactionNumber+ " ----------------------");
+            out.println("-------------------------- "+transactionNumber+ " --------------------------");
             out.println("Transaction type: " + transaction.getTransactionType());
             out.println("Crypto currency: " + amount + " "+  transaction.getCryptoCurrency());
             out.println("Price: " + formattedPrice);
@@ -124,16 +124,16 @@ public class ExchangeMenu extends Menu {
     }
 
     private void onDirectCryptoPurchase() {
+        out.println("\u001b[34m -------------------- Current market prices -------------------- \u001b[0m");
+        out.println("- BTC: $" + CryptoExchangeSystem.getExchange().getPriceFor(CryptoType.BTC));
+        out.println("- ETH: $" + CryptoExchangeSystem.getExchange().getPriceFor(CryptoType.ETH));
+        out.println("- LTC: $" + CryptoExchangeSystem.getExchange().getPriceFor(CryptoType.LTC));
+        out.println(" ");
+
         out.println("Enter the crypto currency you want to buy: ");
         String cryptoCurrency = scanner.nextLine();
         out.println("Enter the amount you want to buy: ");
         String amount = scanner.nextLine();
-
-
-        if (!InputValidator.isValidNumber(amount)) {
-            out.println("\u001b[41m Invalid amount entered. Please enter a valid number. \u001b[0m");
-            return;
-        }
 
         if (!InputValidator.isValidCrypto(cryptoCurrency.toUpperCase())) {
             out.println("\u001b[41m Invalid crypto currency entered. Please enter a valid crypto currency. \u001b[0m");
@@ -141,6 +141,11 @@ public class ExchangeMenu extends Menu {
         }
 
         CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
+
+        if (!InputValidator.isValidNumber(amount)) {
+            out.println("\u001b[41m Invalid amount entered. Please enter a valid number. \u001b[0m");
+            return;
+        }
 
         BigDecimal cryptoAmount = new BigDecimal(amount);
 
@@ -156,15 +161,6 @@ public class ExchangeMenu extends Menu {
     private void onPlaceBuyOrder() {
         out.println("Enter the type of crypto currency you want to buy: ");
         String cryptoCurrency = scanner.nextLine();
-        out.println("Enter the amount you want to buy: ");
-        String amount = scanner.nextLine();
-        out.println("Enter the maximum price you are willing to pay: ");
-        String price = scanner.nextLine();
-
-        if (!InputValidator.isValidNumber(amount) || !InputValidator.isValidNumber(price)) {
-            out.println("\u001b[41m Invalid amount entered. Please enter a valid number. \u001b[0m");
-            return;
-        }
 
         if (!InputValidator.isValidCrypto(cryptoCurrency.toUpperCase())) {
             out.println("\u001b[41m Invalid crypto currency entered. Please enter a valid crypto currency. \u001b[0m");
@@ -172,6 +168,19 @@ public class ExchangeMenu extends Menu {
         }
 
         CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
+        var currentMarketPrice = CryptoExchangeSystem.getExchange().getPriceFor(cryptoType);
+        out.println("\u001b[45m Current market price for "+cryptoType+" is: $"+currentMarketPrice +" \u001b[0m");
+
+        out.println("Enter the amount you want to buy: ");
+        String amount = scanner.nextLine();
+        out.println("Enter the maximum price you are willing to pay: ");
+        String price = scanner.nextLine();
+
+
+        if (!InputValidator.isValidNumber(amount) || !InputValidator.isValidNumber(price)) {
+            out.println("\u001b[41m Invalid amount entered. Please enter a valid number. \u001b[0m");
+            return;
+        }
 
         try{
             placeBuyOrderUseCase.invoke(cryptoType, new BigDecimal(amount), new BigDecimal(price));
@@ -192,9 +201,7 @@ public class ExchangeMenu extends Menu {
         }
 
         CryptoType cryptoType = CryptoType.valueOf(cryptoCurrency.toUpperCase());
-
-        var currentMarketPrice = CryptoExchangeSystem.getExchange().getInitialFunds().get(cryptoType).getPrice();
-
+        var currentMarketPrice = CryptoExchangeSystem.getExchange().getPriceFor(cryptoType);
         out.println("\u001b[45m Current market price for "+cryptoType+" is: $"+currentMarketPrice +" \u001b[0m");
 
         out.println("Enter the amount you want to sell: ");

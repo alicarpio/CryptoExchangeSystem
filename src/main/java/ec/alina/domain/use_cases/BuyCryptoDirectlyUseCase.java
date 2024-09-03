@@ -11,6 +11,7 @@ import ec.alina.domain.validations.exceptions.InsufficientCryptoQuantityExceptio
 import ec.alina.domain.validations.exceptions.InsufficientFundsException;
 import ec.alina.domain.validations.exceptions.InvalidCryptoType;
 import ec.alina.domain.models.Transaction;
+import ec.alina.domain.validations.exceptions.ValidationException;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -28,35 +29,42 @@ public class BuyCryptoDirectlyUseCase {
         this.exchangeService = exchangeService;
     }
 
-    public void invoke(CryptoType cryptoType, BigDecimal amount) throws InsufficientFundsException, InvalidCryptoType, InsufficientCryptoQuantityException {
+    public void invoke(CryptoType cryptoType, BigDecimal amount) throws ValidationException {
         UUID currentUserId = session.getCurrentUser().getId();
         Wallet userWallet = wallets.findWalletByUserId(currentUserId);
         BigDecimal userFunds = userWallet.getFiatBalance();
-        var funds = exchangeService.getFunds();
 
-        if (!funds.containsKey(cryptoType)){
-            throw new InvalidCryptoType();
-        }
+         var err = exchangeService.withFunds(funds -> {
+            if (!funds.containsKey(cryptoType)){
+                return new InvalidCryptoType();
+            }
 
-        CryptoCurrencyData cryptoData = funds.get(cryptoType);
+            CryptoCurrencyData cryptoData = funds.get(cryptoType);
 
-        if (cryptoData.getQuantity().compareTo(amount) < 0){
-            throw new InsufficientCryptoQuantityException();
-        }
+            if (cryptoData.getQuantity().compareTo(amount) < 0){
+                return new InsufficientCryptoQuantityException();
+            }
 
-        BigDecimal cryptoPrice = cryptoData.getPrice().multiply(amount);
+            BigDecimal cryptoPrice = cryptoData.getPrice().multiply(amount);
 
-        if (userFunds.compareTo(cryptoPrice) < 0){
-            throw new InsufficientFundsException();
-        }
+            if (userFunds.compareTo(cryptoPrice) < 0){
+                return new InsufficientFundsException();
+            }
 
-        userWallet.setFiatBalance(userWallet.getFiatBalance().subtract(cryptoPrice));
-        userWallet.getCrytoHoldings().merge(cryptoType, amount, BigDecimal::add);
+            userWallet.setFiatBalance(userWallet.getFiatBalance().subtract(cryptoPrice));
+            userWallet.getCrytoHoldings().merge(cryptoType, amount, BigDecimal::add);
 
-        BigDecimal newExchangeQuantity = cryptoData.getQuantity().subtract(amount);
-        cryptoData.setQuantity(newExchangeQuantity);
+            BigDecimal newExchangeQuantity = cryptoData.getQuantity().subtract(amount);
+            cryptoData.setQuantity(newExchangeQuantity);
 
-        Transaction buyTransaction = new Transaction(cryptoType, amount, cryptoPrice, TransactionType.BUY,currentUserId,exchangeService.getId());
-        transactions.save(currentUserId, buyTransaction);
+            Transaction buyTransaction = new Transaction(cryptoType, amount, cryptoPrice, TransactionType.BUY,currentUserId,exchangeService.getId());
+            transactions.save(currentUserId, buyTransaction);
+
+            return null;
+        });
+
+         if (err != null) {
+             throw err;
+         }
     }
 }

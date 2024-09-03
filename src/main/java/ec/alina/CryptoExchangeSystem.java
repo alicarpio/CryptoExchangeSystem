@@ -18,6 +18,7 @@ import ec.alina.domain.validations.BuyOrderValidator;
 import ec.alina.domain.validations.SellOrderValidator;
 import ec.alina.domain.validations.UserValidator;
 import ec.alina.services.ExchangeServiceImpl;
+import ec.alina.task.CryptoFluctuationTask;
 import ec.alina.ui.ConsoleAdapter;
 
 import java.math.BigDecimal;
@@ -73,6 +74,9 @@ public class CryptoExchangeSystem {
                         placeBuyOrderUseCase,
                         placeSellOrderUseCase
                 );
+
+        new CryptoFluctuationTask(exchange).runForeverAsync();
+
         bootAdapter.boot();
     }
 

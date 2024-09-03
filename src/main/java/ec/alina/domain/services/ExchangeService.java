@@ -10,6 +10,7 @@ import ec.alina.domain.validations.exceptions.InsufficientFundsException;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 public interface ExchangeService {
 
@@ -17,7 +18,7 @@ public interface ExchangeService {
 
     void placeBuyOrder(BuyOrder buyOrder) throws InsufficientFundsException;
 
-    Map<CryptoType, CryptoCurrencyData> getFunds();
-
     UUID getId();
+
+    <T> T withFunds(Function<Map<CryptoType, CryptoCurrencyData>, ? extends T> callback);
 }
