@@ -36,7 +36,7 @@ The following design patterns have been utilized in this project:
 
 
 ## UML Diagram
-[Insert your UML diagram here or provide a link to the image file]
+![UML Diagram of Cryptocurrency Exchange System] (uml/CryptoExchangeSystemGlobant.jpg)
 
 ## Implementation Details
 The Crypto Exchange System has been implemented with the following key features:
@@ -52,7 +52,7 @@ The Crypto Exchange System has been implemented with the following key features:
 ### Order Management:
 - Placement of buy and sell orders
 - Order book maintenance
-- Efficient order matching algorithM
+- Efficient order matching algorithm
 
 ### Transaction Processing:
 - Atomic execution of matched orders
